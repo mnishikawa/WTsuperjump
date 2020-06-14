@@ -53,6 +53,10 @@ uint8_t button_state;
 #define PIN_PLAY BUTTON_3
 #define PIN_JUMP BUTTON_2
 #define PIN_BREAKING_OUT BUTTON_1
+// life control
+#define MAX_ACTOR_LIFE  10
+uint16_t actor_life = MAX_ACTOR_LIFE;
+
 
 /*****
  * load image from sd 
@@ -466,6 +470,7 @@ public:
     void play()
     {
         game flag = game::go_on;
+        actor_life = MAX_ACTOR_LIFE;
         reset();
         while (flag != game::over)
         {
@@ -486,6 +491,8 @@ private:
     {
         uint8_t collide_mask = 0;
         flag = game::go_on;
+
+        // draw point
         point point_pos(screen_width - 10, point_group[0].height() + 10);
         for (size_t i = 0; i < max_point_count; i++)
         {
@@ -525,7 +532,10 @@ private:
         if (collide_mask & pix_type_actor)
         {
             // game over
-            flag = game::over;
+            actor_life--;
+            if(actor_life == 0){
+              flag = game::over;
+              }
         }
         for (size_t i = 0; i < current_wire_count; i++)
         {
